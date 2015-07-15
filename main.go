@@ -10,6 +10,7 @@ import (
 	"image/png"
 	"encoding/json"
 	"path/filepath"
+	"flag"
 )
 
 type GIFMetadata struct {
@@ -54,7 +55,19 @@ func ExtractGIFMetadata(g *gif.GIF) *GIFMetadata {
 }
 
 func main() {
-	gifs, err := filepath.Glob("../../data/raw/*.gif")
+	var inputDir string
+	var outputDir string
+
+	flag.StringVar(&inputDir, "input-dir", "input", "input-dir: A directory of the gifs you want to convert to a sprite image")
+	flag.StringVar(&outputDir, "output-dir", "output", "output-dir: A directory of your processed gifs with the stiched sprite images and metadata json files")
+
+	flag.Parse()
+
+	if (inputDir == "") {
+		panic("Missing input directory. Please supply an input directory and try again.")
+	}
+
+	gifs, err := filepath.Glob(inputDir + "/*.gif")
 	if err != nil {
 		panic(err)
 	}
@@ -75,7 +88,7 @@ func main() {
 		basefilen := filepath.Base(gz)
 		filen := basefilen[0: len(basefilen) - 4] // better way to do this, I'm sure
 		
-		err = os.Mkdir("../../data/processed/" + filen, 0755)
+		err = os.Mkdir(outputDir + "/" + filen, 0755)
 		if err != nil {
 			switch err.(type) {
 			case *os.PathError:
@@ -85,7 +98,7 @@ func main() {
 			}
 		}
 		
-		p, err := os.Create("../../data/processed/" + filen + "/" + filen + ".png")
+		p, err := os.Create(outputDir + "/" + filen + "/" + filen + ".png")
 		if err != nil {
 			panic(err)
 		}
@@ -95,7 +108,7 @@ func main() {
 			panic(err)
 		}
 		
-		d, err := os.Create("../../data/processed/" + filen + "/" + filen + ".json")
+		d, err := os.Create(outputDir + "/" + filen + "/" + filen + ".json")
 		if err != nil {
 			panic(err)
 		}
@@ -109,4 +122,6 @@ func main() {
 	
 		fmt.Printf("%s Frames: %d\n", filen, len(g.Image))
 	}
+
+	fmt.Printf("Converted %d gifs and placed them in %s", len(gifs), outputDir)  
 }
