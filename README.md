@@ -21,13 +21,13 @@ The command essentially splits each frame of an animated gif and stiches them in
 To do this, issue the following command:
 
 ```
-$ gif2sprite --input-dir=<your folder of gifs> --output-dir=<your desired output directory>
+$ gif2sprite --input-dir=<source directory> --output-dir=<output directory>
 ```
 
 Assuming your source directory looks like this:
 
 ```
-<your source directorY>
+<source directory>
  ├── gif1.gif
  └── gif2.gif
 ```
@@ -35,7 +35,7 @@ Assuming your source directory looks like this:
 The result of the command above will create the following folder structure:
 
 ```
-<your desired output directory>
+<output directory>
  ├── gif1
  │   ├── gif1.json
  │   └── gif1.png
